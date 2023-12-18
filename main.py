@@ -1,16 +1,9 @@
 import pygame
 from pygame.locals import *
 
-pygame.init()
-
 ### Screen Size ###
-screen_width = 600
+screen_width  = 600
 screen_height = 600
-
-screen = pygame.display.set_mode((screen_width, screen_height))
-pygame.display.set_caption('Breakout')
-
-font = pygame.font.SysFont('Constantia', 30)
 
 # Background color
 bg = (234, 218, 184)
@@ -38,7 +31,14 @@ clock = pygame.time.Clock()
 fps = 60
 
 live_ball = False
-game_over = 0
+game_over = 0 # When this is set to 1 you win. When it is set to -1 you lose.
+
+if __name__ == "__main__":
+    pygame.init()
+    screen = pygame.display.set_mode((screen_width, screen_height))
+    pygame.display.set_caption('Breakout')
+
+    font = pygame.font.SysFont('Constantia', 30)
 
 
 # This is a small utility function for drawing text on the screen.
@@ -49,7 +49,7 @@ def draw_text(text, font, text_col, x, y):
 
 class wall():
     def __init__(self):
-        self.width = screen_width // cols
+        self.width = screen_width // cols # '//' is just integer division - nothing scary
         self.height = wall_height
 
     def create_wall(self):
@@ -192,6 +192,7 @@ class game_ball():
             else:
                 self.speed_x *= -1
 
+        # Update ball position
         self.rect.x += self.speed_x
         self.rect.y += self.speed_y
 
@@ -224,43 +225,43 @@ player_paddle = paddle()
 # create ball
 ball = game_ball(player_paddle.x + (player_paddle.width // 2), player_paddle.y - player_paddle.height)
 
-run = True
-while run:
+if __name__ == "__main__":
+    run = True
+    while run:
 
-    clock.tick(fps)
+        clock.tick(fps)
 
-    screen.fill(bg)
+        screen.fill(bg)
 
-    # draw all objects
-    wall.draw_wall()
-    player_paddle.draw()
-    ball.draw()
+        # draw all objects
+        wall.draw_wall()
+        player_paddle.draw()
+        ball.draw()
 
-    if live_ball:
-        # draw paddle
-        player_paddle.move()
-        # draw ball
-        game_over = ball.move()
-        if game_over != 0:
-            live_ball = False
+        if live_ball:
+            # draw paddle
+            player_paddle.move()
+            # draw ball
+            game_over = ball.move()
+            if game_over != 0:
+                live_ball = False
 
-    # print player instructions
-    if not live_ball:
-        if game_over == 1:
-            draw_text('You Win!', font, text_col, 240, screen_height // 2 + 50)
-        elif game_over == -1:
-            draw_text('You Lose!', font, text_col, 240, screen_height // 2 + 50)
-        draw_text('Press any key to start', font, text_col, 100, screen_height // 2 + 100)
+        # print player instructions
+        if not live_ball:
+            if game_over == 1:
+                draw_text('You Win!', font, text_col, 240, screen_height // 2 + 50)
+            elif game_over == -1:
+                draw_text('You Lose!', font, text_col, 240, screen_height // 2 + 50)
+            draw_text('Press any key to start', font, text_col, 100, screen_height // 2 + 100)
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
-        if (event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.KEYDOWN) and live_ball == False:
-            live_ball = True
-            ball.reset(player_paddle.x + (player_paddle.width // 2), player_paddle.y - player_paddle.height)
-            player_paddle.reset()
-            wall.create_wall()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+            if (event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.KEYDOWN) and live_ball == False:
+                live_ball = True
+                ball.reset(player_paddle.x + (player_paddle.width // 2), player_paddle.y - player_paddle.height)
+                player_paddle.reset()
+                wall.create_wall()
 
-    pygame.display.update()
-
-pygame.quit()
+        pygame.display.update()
+    pygame.quit()
